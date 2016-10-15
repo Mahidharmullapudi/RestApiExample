@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Display User Information</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+        <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+
+        <style type="text/css">
+
+            .userTableClass th
+            {
+                background-color: #507CD1;
+                font-style: italic;
+                text-align:center;
+                color:White;
+            }
+
+            .userTableClass tr
+            {
+                background-color: #EFF3FB;
+            }
+
+        </style>
+        <script type="text/javascript" language="javascript">
+
+            $(document).ready(function() {
+                $.ajax({
+                    type: "GET",
+                    url: "api/user",
+                    success: function(data) {
+                        $.each(data, function(index, value) {
+                            var row = $("<tr><td>" + value.id + "</td><td>" + value.name +
+                                    "</td><td>" + value.age + "</td><td>" + value.profession +
+                                    "</td><td>" + value.process_status + "</td></tr>");
+                            $("#userTable").append(row);
+                        });
+                    },
+                    error: function() {
+                        alert("Error while retriveing data from the JSON");
+                    }
+                });
+
+            });
+
+            function addUser() {
+                alert("inside addUser method");
+                $.ajax({
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json' 
+                    },
+                    type: "POST",
+                    url: "api/user",
+                    data: formtoJSON(),
+                    success: function(data) {
+                        $.each(data, function(index, value) {
+                            var row = $("<tr><td>" + value.id + "</td><td>" + value.name +
+                                    "</td><td>" + value.age + "</td><td>" + value.profession +
+                                    "</td><td>" + value.process_status + "</td></tr>");
+                            $("#userTable").append(row);
+                            console.log("Inside the success block of the ajax");
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('updateWine error: ' + textStatus);
+                    }
+                });
+
+            }
+
+            function formtoJSON() {
+                console.log("inside formToJSON method");
+                return JSON.stringify({
+                    "id": $('#id').val(),
+                    "name": $('#name').val(),
+                    "age": $('#age').val(),
+                    "profession": $('#profession').val(),
+                    "process_status": $('#process_status').val()
+
+                });
+            }
+
+
+        </script>
+
+    </head>
+    <body>
+        <h2>Hello guys let's make it work</h2>
+        <form id="form1">
+            <div>
+                <table id="userTable" class="userTableClass" border="1" cellpadding="5" cellspacing="1">
+                    <thead>
+                        <tr>
+                            <th>Id</th><th>Name</th><th>Age</th><th>Profession</th><th>Process Status</th>                        
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                Id: <input type="text" id="id"><br>
+                Name: <input type="text" id="name"><br>
+                Age: <input type="text" id="age"><br>
+                Profession: <input type="text" id="profession"><br>
+                Process Status: <input type="text" id="process_status"><br>
+
+                <button id="add-user" onclick="addUser()">Submit</button>
+            </div>            
+        </form>
+    </body>
+</html>
